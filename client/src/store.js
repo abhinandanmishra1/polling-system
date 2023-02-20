@@ -9,6 +9,7 @@ const initialState = {
   results: [0, 0, 0, 0],
   socket,
   showResult: false,
+  totalAnswers: 0,
 };
 
 console.log(initialState)
@@ -53,7 +54,8 @@ const reducer = (state = initialState, action) => {
 
       return {
         ...state,
-        results: updatedResult
+        results: updatedResult,
+        totalAnswers: state.totalAnswers + 1
       };}
     case CLEAR_RESULT:
       return {

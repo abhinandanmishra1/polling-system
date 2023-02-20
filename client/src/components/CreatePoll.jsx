@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { updateResult } from "../store";
 import ShowResult from "./ShowResult";
 
 const CreatePoll = () => {
 	const socket = useSelector((store) => store.socket);
 	const results = useSelector((store) => store.results);
+	const totalAnswers = useSelector(store => store.totalAnswers);
 	const dispatch = useDispatch();
 	const [question, setQuestion] = useState("");
 	const [options, setOptions] = useState(["", "", "", ""]);
@@ -40,10 +42,28 @@ const CreatePoll = () => {
 		});
 	}, [socket]);
 
+	const isAnyEmptyOption = (options) => {
+		let check = false;
+
+		options.forEach(option => {
+			if(!option) {
+				check = true;
+				return;
+			}
+		});
+
+		return check;
+	}
+
 	const handleSubmit = (event) => {
 		event.preventDefault();
+		if(!question || !author || isAnyEmptyOption(options)){
+			toast.error("Please fill all the fields");
+			return;
+		}
 		createPoll(question, options, author);
     setshow(true);
+		toast.success("Poll created successfully")
 	};
 
 	const createPoll = (question, options, createdBy) => {
@@ -117,6 +137,17 @@ const CreatePoll = () => {
 			</div>
 
 			<div className="grid grid-template-cols-6">
+				<label className="grid-col-label" htmlFor="option4">Created By:</label>
+				<input
+					className="p-2 outline-none rounded-lg text-black"
+					type="text"
+					id="author"
+					value={author}
+					onChange={(e) => setAuthor(e.target.value)}
+				/>
+			</div>
+
+			<div className="grid grid-template-cols-6">
 				<label className="grid-col-label" htmlFor="answer">Correct Answer</label>
 				<input
 					className="p-2 outline-none rounded-lg text-black"
@@ -135,7 +166,7 @@ const CreatePoll = () => {
 			show && (
 				<div className="w-full grid place-items-center">
 					<h1 className="text-xl ">Live results {timer> 0 && <span>{timer} second</span>}</h1>
-					 <ShowResult result={results} {...{question, options, correctAnswer}} />
+					 <ShowResult result={results} {...{question, options, correctAnswer: correctAnswer -1, totalAnswers}} />
 				</div>
 			)
 		}
