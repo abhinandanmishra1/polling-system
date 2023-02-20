@@ -53,7 +53,7 @@ const CreatePoll = () => {
 			createdBy,
 		};
 		socket.emit("create_poll", poll);
-		setTimer(10);
+		setTimer(60);
 	};
 
 	return (

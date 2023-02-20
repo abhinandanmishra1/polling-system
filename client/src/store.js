@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import io from 'socket.io-client';
 
 // Define initial state
-const socket = io.connect("http://localhost:5000");
+const socket = io.connect("https://polling-backend.onrender.com/");
 const initialState = {
   polls: {},
   results: [0, 0, 0, 0],

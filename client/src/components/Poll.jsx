@@ -18,8 +18,7 @@ const Poll = () => {
 		const cunter =
 		timer > 0 && setInterval(() => setTimer(timer - 1), 1000);
 
-		if(timer === 0){
-
+		if(timer === 0 && selectedAnswerIndex === -1){
 			socket.emit('select_option', selectedAnswerIndex);
 			setPollWindow(false);
 		}
@@ -30,7 +29,7 @@ const Poll = () => {
 		socket.on("recieved", (data) => {
 			dispatch(createPoll(data));
 			dispatch(clearResult());
-			setTimer(10);
+			setTimer(60);
 		});
 		socket.on("show_result", (data) => {
 			console.log("result_received", data);
@@ -41,16 +40,16 @@ const Poll = () => {
 
 
 	const onAnswerSelected = (answerIndex) => {
+		socket.emit('select_option', answerIndex);
 		setSelectedAnswerIndex(answerIndex);
 		setPollWindow(false);
-		setTimer(0);
 	};
 
 	return (
 		<div className="w-full grid gap-2">
 			{pollWindowOpen && (
 				<>
-					<h2 className="text-white">Q. {question && question} {timer> 0 && <span>{timer}</span>} </h2>
+					<h2 className="text-white flex justify-between">Q. {question && question} {timer> 0 && <span>{timer} s</span>} </h2>
 					<ul className="grid gap-2 w-full list-style-none text-white">
 						{(options || []).map((answer, index) => (
 							<li
