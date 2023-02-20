@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.grid-col-label {
+  grid-column: 1/3;
+}
